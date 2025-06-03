@@ -1,4 +1,6 @@
 import { users, type User, type InsertUser, loanApplications, type LoanApplication, type InsertLoanApplication } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -12,69 +14,56 @@ export interface IStorage {
   updateLoanApplicationStatus(id: number, status: string): Promise<LoanApplication | undefined>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private loanApplications: Map<number, LoanApplication>;
-  private currentUserId: number;
-  private currentApplicationId: number;
-
-  constructor() {
-    this.users = new Map();
-    this.loanApplications = new Map();
-    this.currentUserId = 1;
-    this.currentApplicationId = 1;
-  }
-
+export class DatabaseStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
     return user;
   }
 
   async createLoanApplication(insertApplication: InsertLoanApplication): Promise<LoanApplication> {
-    const id = this.currentApplicationId++;
-    const application: LoanApplication = {
-      ...insertApplication,
-      id,
-      createdAt: new Date(),
-      status: "pending",
-      monthlyPayment: insertApplication.monthlyPayment || "0",
-      totalCost: insertApplication.totalCost || "0",
-      monthlyExpenses: insertApplication.monthlyExpenses || null,
-      marketingAccepted: insertApplication.marketingAccepted || false,
-    };
-    this.loanApplications.set(id, application);
+    const [application] = await db
+      .insert(loanApplications)
+      .values({
+        ...insertApplication,
+        monthlyPayment: insertApplication.monthlyPayment || "0",
+        totalCost: insertApplication.totalCost || "0",
+        monthlyExpenses: insertApplication.monthlyExpenses || null,
+        marketingAccepted: insertApplication.marketingAccepted || false,
+      })
+      .returning();
     return application;
   }
 
   async getLoanApplication(id: number): Promise<LoanApplication | undefined> {
-    return this.loanApplications.get(id);
+    const [application] = await db.select().from(loanApplications).where(eq(loanApplications.id, id));
+    return application || undefined;
   }
 
   async getAllLoanApplications(): Promise<LoanApplication[]> {
-    return Array.from(this.loanApplications.values());
+    return await db.select().from(loanApplications);
   }
 
   async updateLoanApplicationStatus(id: number, status: string): Promise<LoanApplication | undefined> {
-    const application = this.loanApplications.get(id);
-    if (application) {
-      const updatedApplication = { ...application, status };
-      this.loanApplications.set(id, updatedApplication);
-      return updatedApplication;
-    }
-    return undefined;
+    const [application] = await db
+      .update(loanApplications)
+      .set({ status })
+      .where(eq(loanApplications.id, id))
+      .returning();
+    return application || undefined;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
