@@ -14,8 +14,8 @@ export const loanApplications = pgTable("loan_applications", {
   amount: integer("amount").notNull(),
   duration: integer("duration").notNull(), // in months
   purpose: text("purpose").notNull(),
-  monthlyPayment: decimal("monthly_payment", { precision: 10, scale: 2 }),
-  totalCost: decimal("total_cost", { precision: 10, scale: 2 }),
+  monthlyPayment: text("monthly_payment").notNull(),
+  totalCost: text("total_cost").notNull(),
   
   // Personal information
   firstName: text("first_name").notNull(),

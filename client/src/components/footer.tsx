@@ -86,7 +86,7 @@ export default function Footer() {
         
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
           <p>
-            &copy; 2024 MoneyFlow. Tous droits réservés. | Un crédit vous engage et doit être remboursé.
+            &copy; 2024 MoneyFlow est un service de LHOMAN GROUP SA. Tous droits réservés. | Un crédit vous engage et doit être remboursé.
           </p>
         </div>
       </div>

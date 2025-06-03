@@ -49,6 +49,10 @@ export class MemStorage implements IStorage {
       id,
       createdAt: new Date(),
       status: "pending",
+      monthlyPayment: insertApplication.monthlyPayment || "0",
+      totalCost: insertApplication.totalCost || "0",
+      monthlyExpenses: insertApplication.monthlyExpenses || null,
+      marketingAccepted: insertApplication.marketingAccepted || false,
     };
     this.loanApplications.set(id, application);
     return application;
