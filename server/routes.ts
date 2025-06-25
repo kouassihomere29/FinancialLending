@@ -28,6 +28,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const application = await storage.createLoanApplication(validatedData, userId);
       
       console.log("Created application:", application);
+      console.log("Application will be visible in user dashboard and admin dashboard");
       res.status(201).json(application);
     } catch (error: any) {
       console.error("Application creation error:", error);
