@@ -127,6 +127,13 @@ export function setupAuth(app: Express) {
       res.sendStatus(200);
     });
   });
+
+  app.get("/api/logout", (req, res, next) => {
+    req.logout((err) => {
+      if (err) return next(err);
+      res.redirect('/');
+    });
+  });
 }
 
 export const isAuthenticated = (req: any, res: any, next: any) => {
