@@ -27,8 +27,7 @@ export default function HeroSection() {
               <span className="text-yellow-300">Obtenez votre prêt en moins de 2 mois grâce à nos partenaires financiers</span>
             </h1>
             <p className="text-xl mb-8 text-blue-100 leading-relaxed">
-              Solution de prêt personnel rapide, simple et 100% en ligne. 
-              De 500€ à 3000€, remboursement flexible jusqu'à 12 mois.
+              Solution de prêt rapide, simple, flexible et 100% en ligne.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <Button 

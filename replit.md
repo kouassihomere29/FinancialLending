@@ -99,7 +99,7 @@ This is a loan application web platform built with a modern full-stack architect
 
 ```
 Changelog:
-- January 6, 2025: Updated hero section title to emphasize project financing and partner network
+- January 6, 2025: Updated hero section title and description to emphasize project financing and simplified messaging
 - January 6, 2025: Implemented complete 7-step loan process with real-time tracking and admin panel
 - January 6, 2025: Migration completed from Replit Agent to Replit environment
 - December 26, 2024: Updated "Comment ça marche" section from 3 to 7 steps process
