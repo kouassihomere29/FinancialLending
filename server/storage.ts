@@ -32,17 +32,20 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   // User operations
-  // (IMPORTANT) these user operations are mandatory for Replit Auth.
-
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
 
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.email, email));
+    return result[0];
+  }
+
   async upsertUser(userData: UpsertUser): Promise<User> {
     try {
       // First try to insert new user
-      const [user] = await this.db
+      const [user] = await db
         .insert(users)
         .values({
           ...userData,
@@ -54,7 +57,7 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error("Error creating user:", error);
       // If insert fails due to conflict, try to update
-      const [user] = await this.db
+      const [user] = await db
         .update(users)
         .set({
           ...userData,
