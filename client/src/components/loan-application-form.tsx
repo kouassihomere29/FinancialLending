@@ -167,7 +167,7 @@ export default function LoanApplicationForm() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          window.location.href = "/auth";
         }, 2000);
         return;
       }
@@ -189,7 +189,7 @@ export default function LoanApplicationForm() {
         description: "Vous devez créer un compte pour soumettre votre demande. Vos données ont été sauvegardées.",
       });
       setTimeout(() => {
-        window.location.href = "/api/login";
+        window.location.href = "/auth";
       }, 2000);
       return;
     }
