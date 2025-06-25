@@ -32,10 +32,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(application);
     } catch (error: any) {
       console.error("Application creation error:", error);
+      console.error("Error details:", {
+        name: error.name,
+        message: error.message,
+        issues: error.issues || 'No issues property',
+        stack: error.stack
+      });
       
       if (error.name === "ZodError") {
+        console.error("Zod validation failed:", error.issues);
         const validationError = fromZodError(error);
-        return res.status(400).json({ message: validationError.message });
+        return res.status(400).json({ 
+          message: "Erreur de validation", 
+          details: validationError.message,
+          issues: error.issues 
+        });
       }
       res.status(500).json({ message: "Erreur lors de la création de la demande" });
     }

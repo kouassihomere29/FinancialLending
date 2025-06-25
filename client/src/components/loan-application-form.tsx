@@ -129,12 +129,19 @@ export default function LoanApplicationForm() {
       };
       console.log("Submitting application data:", applicationData);
       try {
+        console.log("About to send request to /api/loan-applications");
+        console.log("Application data being sent:", JSON.stringify(applicationData, null, 2));
+        
         const response = await apiRequest("POST", "/api/loan-applications", applicationData);
+        console.log("Response status:", response.status);
+        console.log("Response headers:", Object.fromEntries(response.headers.entries()));
+        
         const result = await response.json();
         console.log("Server response:", result);
         return result;
       } catch (error) {
-        console.error("Submission error:", error);
+        console.error("Detailed submission error:", error);
+        console.error("Error stack:", error.stack);
         throw error;
       }
     },
