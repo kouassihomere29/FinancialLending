@@ -30,21 +30,19 @@ async function comparePasswords(supplied: string, stored: string) {
 }
 
 export function setupAuth(app: Express) {
-  const PostgresSessionStore = connectPg(session);
-  const sessionStore = new PostgresSessionStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
-    tableName: "sessions",
-  });
+  // Use default memory store for sessions (simpler and more reliable)
+  const sessionStore = new session.MemoryStore();
 
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || 'fallback-secret-for-development',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     store: sessionStore,
     cookie: {
-      secure: false, // Set to true in production with HTTPS
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      secure: false,
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: 'lax'
     },
   };
 
@@ -132,6 +130,10 @@ export function setupAuth(app: Express) {
 }
 
 export const isAuthenticated = (req: any, res: any, next: any) => {
+  console.log("Auth check - isAuthenticated:", req.isAuthenticated());
+  console.log("Auth check - session:", req.session);
+  console.log("Auth check - user:", req.user);
+  
   if (!req.isAuthenticated()) {
     return res.status(401).json({ message: "Unauthorized" });
   }

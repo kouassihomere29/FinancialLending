@@ -127,13 +127,9 @@ export default function LoanApplicationForm() {
         monthlyPayment: calculation.monthlyPayment.toString(),
         totalCost: calculation.totalCost.toString(),
       };
-      return await apiRequest("/api/loan-applications", {
-        method: "POST",
-        body: JSON.stringify(applicationData),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      console.log("Submitting application data:", applicationData);
+      const response = await apiRequest("POST", "/api/loan-applications", applicationData);
+      return await response.json();
     },
     onSuccess: (data: any) => {
       // Clear saved form data
