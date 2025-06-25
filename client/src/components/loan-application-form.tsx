@@ -254,10 +254,10 @@ export default function LoanApplicationForm() {
                   Pour votre sécurité et pour sauvegarder votre progression, vous devez vous connecter avant de commencer votre demande de prêt.
                 </p>
                 <Button 
-                  onClick={() => window.location.href = "/api/login"}
+                  onClick={() => window.location.href = "/auth"}
                   className="w-full"
                 >
-                  Se connecter avec Replit
+                  Se connecter
                 </Button>
               </CardContent>
             </Card>

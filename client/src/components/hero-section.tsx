@@ -13,7 +13,7 @@ export default function HeroSection() {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
-      window.location.href = "/api/login";
+      window.location.href = "/auth";
     }
   };
 

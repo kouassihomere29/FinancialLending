@@ -25,7 +25,7 @@ export default function LoanCalculator() {
     } else {
       // Sauvegarder les paramètres du prêt et rediriger vers la connexion
       localStorage.setItem('loanParams', JSON.stringify({ amount, duration }));
-      window.location.href = "/api/login";
+      window.location.href = "/auth";
     }
   };
 

@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated } from "./auth";
 import { insertLoanApplicationSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 
@@ -10,22 +10,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await setupAuth(app);
 
   // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
+  app.get('/api/user', (req: any, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
+    res.json(req.user);
   });
 
   // Loan application routes (protected)
   app.post("/api/loan-applications", isAuthenticated, async (req: any, res) => {
     try {
       const validatedData = insertLoanApplicationSchema.parse(req.body);
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const application = await storage.createLoanApplication(validatedData, userId);
       res.json(application);
     } catch (error: any) {
@@ -55,7 +51,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user's applications
   app.get("/api/loan-applications", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const applications = await storage.getLoanApplicationsByUserId(userId);
       res.json(applications);
     } catch (error) {

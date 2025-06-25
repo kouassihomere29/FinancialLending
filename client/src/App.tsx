@@ -8,12 +8,14 @@ import Home from "@/pages/home";
 import Dashboard from "@/pages/dashboard";
 import ApplicationStatus from "@/pages/application-status";
 import AdminPanel from "@/components/admin-panel";
+import AuthPage from "@/pages/auth";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/auth" component={AuthPage} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/application/:id" component={ApplicationStatus} />
       <Route path="/admin" component={AdminPanel} />

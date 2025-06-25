@@ -1,10 +1,42 @@
 import { Button } from "@/components/ui/button";
-import { Coins, Menu } from "lucide-react";
+import { Coins, Menu, User, LogOut } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useAuth } from "@/hooks/useAuth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, isAuthenticated } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest("POST", "/api/logout");
+    },
+    onSuccess: () => {
+      queryClient.setQueryData(["/api/user"], null);
+      toast({
+        title: "Déconnexion réussie",
+        description: "À bientôt !",
+      });
+      window.location.href = "/";
+    },
+  });
+
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -42,9 +74,34 @@ export default function Header() {
                   {item.label}
                 </button>
               ))}
-              <Button className="bg-primary text-white hover:bg-primary-dark">
-                Se connecter
-              </Button>
+              {isAuthenticated ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button className="bg-primary text-white hover:bg-primary-dark">
+                      <User className="h-4 w-4 mr-2" />
+                      {user?.firstName || 'Mon compte'}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => window.location.href = "/dashboard"}>
+                      <User className="h-4 w-4 mr-2" />
+                      Mon espace
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Se déconnecter
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button 
+                  className="bg-primary text-white hover:bg-primary-dark"
+                  onClick={() => window.location.href = "/auth"}
+                >
+                  Se connecter
+                </Button>
+              )}
             </div>
           </div>
           
@@ -66,9 +123,32 @@ export default function Header() {
                       {item.label}
                     </button>
                   ))}
-                  <Button className="bg-primary text-white hover:bg-primary-dark w-full">
-                    Se connecter
-                  </Button>
+                  {isAuthenticated ? (
+                    <div className="space-y-2">
+                      <Button 
+                        onClick={() => window.location.href = "/dashboard"}
+                        className="bg-primary text-white hover:bg-primary-dark w-full"
+                      >
+                        <User className="h-4 w-4 mr-2" />
+                        Mon espace
+                      </Button>
+                      <Button 
+                        onClick={handleLogout}
+                        variant="outline"
+                        className="w-full"
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Se déconnecter
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button 
+                      onClick={() => window.location.href = "/auth"}
+                      className="bg-primary text-white hover:bg-primary-dark w-full"
+                    >
+                      Se connecter
+                    </Button>
+                  )}
                 </div>
               </SheetContent>
             </Sheet>
