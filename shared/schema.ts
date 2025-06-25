@@ -38,6 +38,7 @@ export const users = pgTable("users", {
 
 export const loanApplications = pgTable("loan_applications", {
   id: serial("id").primaryKey(),
+  userId: varchar("user_id").references(() => users.id),
   // Loan details
   amount: integer("amount").notNull(),
   duration: integer("duration").notNull(), // in months
@@ -85,12 +86,12 @@ export const loanApplications = pgTable("loan_applications", {
   marketingAccepted: boolean("marketing_accepted").notNull().default(false),
 });
 
-export const insertUserSchema = createInsertSchema(users).omit({
-  id: true,
-});
+export type UpsertUser = typeof users.$inferInsert;
+export type User = typeof users.$inferSelect;
 
 export const insertLoanApplicationSchema = createInsertSchema(loanApplications).omit({
   id: true,
+  userId: true,
   createdAt: true,
   updatedAt: true,
   step1CompletedAt: true,
@@ -117,7 +118,5 @@ export const insertLoanApplicationSchema = createInsertSchema(loanApplications).
   marketingAccepted: z.boolean().optional(),
 });
 
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type User = typeof users.$inferSelect;
 export type InsertLoanApplication = z.infer<typeof insertLoanApplicationSchema>;
 export type LoanApplication = typeof loanApplications.$inferSelect;

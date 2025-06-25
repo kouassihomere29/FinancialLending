@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -13,6 +13,8 @@ import { ArrowLeft, ArrowRight, Check, Info } from "lucide-react";
 import { insertLoanApplicationSchema } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { isUnauthorizedError } from "@/lib/authUtils";
 import { calculateLoan } from "@/lib/loan-calculator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -37,15 +39,36 @@ type FormData = {
 
 export default function LoanApplicationForm() {
   const [currentStep, setCurrentStep] = useState(1);
+  const [savedFormData, setSavedFormData] = useState<FormData | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Save form data to localStorage
+  const saveFormData = (data: FormData) => {
+    localStorage.setItem('loanApplicationData', JSON.stringify(data));
+    setSavedFormData(data);
+  };
+
+  // Load saved form data
+  useEffect(() => {
+    const saved = localStorage.getItem('loanApplicationData');
+    if (saved) {
+      try {
+        const parsedData = JSON.parse(saved);
+        setSavedFormData(parsedData);
+      } catch (error) {
+        console.error('Error loading saved form data:', error);
+      }
+    }
+  }, []);
 
   const form = useForm<FormData>({
     resolver: zodResolver(insertLoanApplicationSchema.extend({
       monthlyPayment: insertLoanApplicationSchema.shape.monthlyPayment.optional(),
       totalCost: insertLoanApplicationSchema.shape.totalCost.optional(),
     })),
-    defaultValues: {
+    defaultValues: savedFormData || {
       amount: 1500,
       duration: 6,
       purpose: "",
@@ -62,6 +85,15 @@ export default function LoanApplicationForm() {
       marketingAccepted: false,
     },
   });
+
+  // Update form values when saved data is loaded
+  useEffect(() => {
+    if (savedFormData) {
+      Object.keys(savedFormData).forEach((key) => {
+        form.setValue(key as keyof FormData, savedFormData[key as keyof FormData]);
+      });
+    }
+  }, [savedFormData, form]);
 
   const amount = form.watch("amount");
   const duration = form.watch("duration");
@@ -83,15 +115,18 @@ export default function LoanApplicationForm() {
       });
     },
     onSuccess: (data: any) => {
+      // Clear saved form data
+      localStorage.removeItem('loanApplicationData');
+      
       toast({
-        title: "Demande envoyée !",
-        description: "Votre demande de prêt a été soumise avec succès. Vous recevrez une réponse sous 24h.",
+        title: "Demande soumise !",
+        description: "Votre demande a été envoyée avec succès. Vous pouvez maintenant suivre son avancement dans votre espace client.",
       });
       
       // Redirect to status page
       if (data?.id) {
         setTimeout(() => {
-          window.location.href = `/application/${data.id}`;
+          window.location.href = `/dashboard`;
         }, 1500);
       }
       
@@ -100,6 +135,22 @@ export default function LoanApplicationForm() {
       setCurrentStep(1);
     },
     onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        // Save current form data before redirecting to login
+        const currentData = form.getValues();
+        saveFormData(currentData);
+        
+        toast({
+          title: "Connexion requise",
+          description: "Vous devez vous connecter pour soumettre votre demande. Vos données ont été sauvegardées.",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 2000);
+        return;
+      }
+      
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors de la soumission de votre demande.",
@@ -109,8 +160,33 @@ export default function LoanApplicationForm() {
   });
 
   const onSubmit = (data: FormData) => {
+    if (!isAuthenticated) {
+      // Save form data and redirect to login
+      saveFormData(data);
+      toast({
+        title: "Connexion requise",
+        description: "Vous devez créer un compte pour soumettre votre demande. Vos données ont été sauvegardées.",
+      });
+      setTimeout(() => {
+        window.location.href = "/api/login";
+      }, 2000);
+      return;
+    }
+    
     submitApplication.mutate(data);
   };
+
+  // Auto-save form data as user types
+  const watchedValues = form.watch();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (Object.values(watchedValues).some(value => value)) {
+        saveFormData(watchedValues);
+      }
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, [watchedValues]);
 
   const nextStep = () => {
     if (currentStep < 3) {

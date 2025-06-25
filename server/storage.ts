@@ -1,15 +1,25 @@
-import { users, type User, type InsertUser, loanApplications, type LoanApplication, type InsertLoanApplication } from "@shared/schema";
+import {
+  users,
+  type User,
+  type UpsertUser,
+  loanApplications,
+  type LoanApplication,
+  type InsertLoanApplication,
+} from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 
+// Interface for storage operations
 export interface IStorage {
-  getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  // User operations
+  // (IMPORTANT) these user operations are mandatory for Replit Auth.
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
   
   // Loan application methods
-  createLoanApplication(application: InsertLoanApplication): Promise<LoanApplication>;
+  createLoanApplication(application: InsertLoanApplication, userId: string): Promise<LoanApplication>;
   getLoanApplication(id: number): Promise<LoanApplication | undefined>;
+  getLoanApplicationsByUserId(userId: string): Promise<LoanApplication[]>;
   getAllLoanApplications(): Promise<LoanApplication[]>;
   updateLoanApplicationStatus(id: number, status: string): Promise<LoanApplication | undefined>;
   
@@ -21,29 +31,35 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  async getUser(id: number): Promise<User | undefined> {
+  // User operations
+  // (IMPORTANT) these user operations are mandatory for Replit Auth.
+
+  async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+    return user;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
+  async upsertUser(userData: UpsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
-      .values(insertUser)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
       .returning();
     return user;
   }
 
-  async createLoanApplication(insertApplication: InsertLoanApplication): Promise<LoanApplication> {
+  async createLoanApplication(insertApplication: InsertLoanApplication, userId: string): Promise<LoanApplication> {
     const [application] = await db
       .insert(loanApplications)
       .values({
         ...insertApplication,
+        userId,
         monthlyPayment: insertApplication.monthlyPayment || "0",
         totalCost: insertApplication.totalCost || "0",
         monthlyExpenses: insertApplication.monthlyExpenses || null,
@@ -56,6 +72,10 @@ export class DatabaseStorage implements IStorage {
   async getLoanApplication(id: number): Promise<LoanApplication | undefined> {
     const [application] = await db.select().from(loanApplications).where(eq(loanApplications.id, id));
     return application || undefined;
+  }
+
+  async getLoanApplicationsByUserId(userId: string): Promise<LoanApplication[]> {
+    return await db.select().from(loanApplications).where(eq(loanApplications.userId, userId));
   }
 
   async getAllLoanApplications(): Promise<LoanApplication[]> {
