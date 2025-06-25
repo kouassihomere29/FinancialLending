@@ -106,10 +106,14 @@ export function setupAuth(app: Express) {
       });
 
       req.login(user, (err) => {
-        if (err) return next(err);
+        if (err) {
+          console.error("Login error:", err);
+          return next(err);
+        }
         res.status(201).json({ id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName });
       });
     } catch (error) {
+      console.error("Registration error:", error);
       res.status(500).json({ message: "Erreur lors de l'inscription" });
     }
   });

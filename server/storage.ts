@@ -40,18 +40,30 @@ export class DatabaseStorage implements IStorage {
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(userData)
-      .onConflictDoUpdate({
-        target: users.id,
-        set: {
+    try {
+      // First try to insert new user
+      const [user] = await this.db
+        .insert(users)
+        .values({
+          ...userData,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .returning();
+      return user;
+    } catch (error) {
+      console.error("Error creating user:", error);
+      // If insert fails due to conflict, try to update
+      const [user] = await this.db
+        .update(users)
+        .set({
           ...userData,
           updatedAt: new Date(),
-        },
-      })
-      .returning();
-    return user;
+        })
+        .where(eq(users.id, userData.id))
+        .returning();
+      return user;
+    }
   }
 
   async createLoanApplication(insertApplication: InsertLoanApplication, userId: string): Promise<LoanApplication> {
