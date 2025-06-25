@@ -1,22 +1,42 @@
-import { Edit, UserCheck, DollarSign } from "lucide-react";
+import { Calculator, FileText, Search, Send, MessageSquare, UserCheck, DollarSign } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function HowItWorks() {
   const steps = [
     {
-      icon: Edit,
-      title: "1. Simulez",
+      icon: Calculator,
+      title: "1. Simulez votre prêt",
       description: "Utilisez notre simulateur pour calculer votre prêt et connaître vos mensualités en temps réel.",
     },
     {
-      icon: UserCheck,
-      title: "2. Demandez",
+      icon: FileText,
+      title: "2. Soumettez votre projet",
       description: "Remplissez votre demande en ligne en quelques minutes. Vos données sont 100% sécurisées.",
     },
     {
+      icon: Search,
+      title: "3. Analyse & validation du dossier",
+      description: "Notre équipe analyse votre dossier et vérifie vos informations pour une validation complète.",
+    },
+    {
+      icon: Send,
+      title: "4. Nous soumettons votre dossier au prêteur",
+      description: "Votre dossier validé est transmis à notre réseau de prêteurs partenaires pour évaluation.",
+    },
+    {
+      icon: MessageSquare,
+      title: "5. Réponse du prêteur",
+      description: "Réponse du prêteur avec proposition d'un plan de remboursement en cas d'acceptation par le prêteur.",
+    },
+    {
+      icon: UserCheck,
+      title: "6. Ouverture d'un compte chez le prêteur",
+      description: "Ouverture d'un compte chez le prêteur après validation de votre dossier.",
+    },
+    {
       icon: DollarSign,
-      title: "3. Recevez",
-      description: "Réponse immédiate et fonds virés sur votre compte dans les 24h après acceptation.",
+      title: "7. Fonds virés sur votre compte",
+      description: "Fonds virés sur votre compte après acceptation par le prêteur.",
       isSuccess: true,
     },
   ];
@@ -29,10 +49,10 @@ export default function HowItWorks() {
             Comment ça marche ?
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Un processus simple et transparent en 3 étapes
+            Un processus simple et transparent en 7 étapes
           </p>
         </div>
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-4 xl:grid-cols-4 gap-6">
           {steps.map((step, index) => {
             const IconComponent = step.icon;
             return (

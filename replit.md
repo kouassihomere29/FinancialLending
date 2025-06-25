@@ -99,6 +99,7 @@ This is a loan application web platform built with a modern full-stack architect
 
 ```
 Changelog:
+- December 26, 2024. Updated "Comment ça marche" section from 3 to 7 steps process
 - June 25, 2025. Initial setup
 ```
 
