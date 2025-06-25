@@ -191,8 +191,11 @@ export default function LoanApplicationForm() {
   });
 
   const onSubmit = (data: FormData) => {
+    console.log("=== onSubmit called ===");
+    console.log("isAuthenticated:", isAuthenticated);
+    console.log("Form data:", data);
+    
     if (!isAuthenticated) {
-      // Save form data and redirect to login
       saveFormData(data);
       toast({
         title: "Connexion requise",
@@ -204,6 +207,7 @@ export default function LoanApplicationForm() {
       return;
     }
     
+    console.log("User is authenticated, calling mutation");
     submitApplication.mutate(data);
   };
 
@@ -715,12 +719,18 @@ export default function LoanApplicationForm() {
                         Retour
                       </Button>
                       <Button 
-                        type="submit" 
-                        disabled={submitApplication.isPending}
-                        className="bg-success text-white hover:bg-green-600"
+                        type="button"
+                        onClick={() => {
+                          console.log("Submit button clicked");
+                          const formData = form.getValues();
+                          console.log("Form data:", formData);
+                          onSubmit(formData);
+                        }}
+                        disabled={submitApplication.isPending || !form.watch("termsAccepted") || !form.watch("creditCheckAccepted")}
+                        className="bg-green-600 text-white hover:bg-green-700"
                       >
                         <Check className="mr-2 h-4 w-4" />
-{submitApplication.isPending ? "Soumission..." : "Soumettre ma demande"}
+                        {submitApplication.isPending ? "Soumission..." : "Soumettre ma demande"}
                       </Button>
                     </div>
                   </div>
