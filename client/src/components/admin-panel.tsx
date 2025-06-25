@@ -63,7 +63,7 @@ export default function AdminPanel() {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/loan-applications"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/loan-applications"] });
       toast({ title: "Étape avancée avec succès" });
     },
   });

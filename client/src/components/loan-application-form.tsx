@@ -632,8 +632,15 @@ export default function LoanApplicationForm() {
                     <Alert className="bg-yellow-50 border-yellow-200">
                       <Info className="h-4 w-4 text-yellow-600" />
                       <AlertDescription className="text-sm text-yellow-800">
-                        <p className="font-medium mb-1">Processus en 7 étapes</p>
-                        <p>Après soumission, votre dossier sera analysé par nos partenaires financiers. Les étapes 4-7 comprennent l'analyse, la sélection du prêteur, l'ouverture de compte et le transfert des fonds (délai total: jusqu'à 2 mois).</p>
+                        <p className="font-medium mb-1">
+                          {!isAuthenticated ? "Compte requis" : "Processus en 7 étapes"}
+                        </p>
+                        <p>
+                          {!isAuthenticated ? 
+                            "Vous devez créer un compte pour soumettre votre demande et suivre les étapes 4-7 dans votre espace client sécurisé." :
+                            "Après soumission, votre dossier sera analysé par nos partenaires financiers. Les étapes 4-7 comprennent l'analyse, la sélection du prêteur, l'ouverture de compte et le transfert des fonds (délai total: jusqu'à 2 mois)."
+                          }
+                        </p>
                       </AlertDescription>
                     </Alert>
 
