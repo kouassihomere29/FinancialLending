@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Calculator, FileText, Search, Send, MessageSquare, UserCheck, DollarSign, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import AdminDemo from "@/components/admin-demo";
 
 const steps = [
   {
@@ -290,10 +291,18 @@ export default function ApplicationStatus() {
           </CardContent>
         </Card>
 
+        {/* Demo Section */}
+        {application.currentStep < 7 && application.status !== "completed" && (
+          <AdminDemo applicationId={application.id} />
+        )}
+
         {/* Actions */}
-        <div className="mt-8 text-center">
+        <div className="mt-8 text-center space-x-4">
           <Link href="/">
             <Button variant="outline">Retour à l'accueil</Button>
+          </Link>
+          <Link href="/admin">
+            <Button variant="secondary">Panel Admin</Button>
           </Link>
         </div>
       </div>

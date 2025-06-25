@@ -74,14 +74,28 @@ export default function LoanApplicationForm() {
         monthlyPayment: calculation.monthlyPayment.toString(),
         totalCost: calculation.totalCost.toString(),
       };
-      return apiRequest("POST", "/api/loan-applications", applicationData);
-    },
-    onSuccess: () => {
-      toast({
-        title: "Demande soumise avec succès !",
-        description: "Vous recevrez une réponse dans les 5 minutes par email.",
+      return await apiRequest("/api/loan-applications", {
+        method: "POST",
+        body: JSON.stringify(applicationData),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/loan-applications"] });
+    },
+    onSuccess: (data: any) => {
+      toast({
+        title: "Demande envoyée !",
+        description: "Votre demande de prêt a été soumise avec succès. Vous recevrez une réponse sous 24h.",
+      });
+      
+      // Redirect to status page
+      if (data?.id) {
+        setTimeout(() => {
+          window.location.href = `/application/${data.id}`;
+        }, 1500);
+      }
+      
+      // Reset form
       form.reset();
       setCurrentStep(1);
     },
