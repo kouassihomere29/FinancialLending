@@ -23,8 +23,8 @@ export default function HeroSection() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="animate-slide-up">
             <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-              Obtenez votre prêt en{" "}
-              <span className="text-yellow-300">quelques minutes</span>
+              Financez votre projet quelques soit le besoin,{" "}
+              <span className="text-yellow-300">Obtenez votre prêt en moins de 2 mois grâce à nos partenaires financiers</span>
             </h1>
             <p className="text-xl mb-8 text-blue-100 leading-relaxed">
               Solution de prêt personnel rapide, simple et 100% en ligne. 
