@@ -726,7 +726,7 @@ export default function LoanApplicationForm() {
                           console.log("Form data:", formData);
                           onSubmit(formData);
                         }}
-                        disabled={submitApplication.isPending || !form.watch("termsAccepted") || !form.watch("creditCheckAccepted")}
+                        disabled={submitApplication.isPending || !form.watch("termsAccepted") || !form.watch("creditCheckAccepted") || !form.watch("purpose")}
                         className="bg-green-600 text-white hover:bg-green-700"
                       >
                         <Check className="mr-2 h-4 w-4" />
