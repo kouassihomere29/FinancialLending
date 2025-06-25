@@ -20,16 +20,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Loan application routes (protected)
   app.post("/api/loan-applications", isAuthenticated, async (req: any, res) => {
     try {
+      console.log("Received application data:", req.body);
+      console.log("User ID:", req.user.id);
+      
       const validatedData = insertLoanApplicationSchema.parse(req.body);
       const userId = req.user.id;
       const application = await storage.createLoanApplication(validatedData, userId);
-      res.json(application);
+      
+      console.log("Created application:", application);
+      res.status(201).json(application);
     } catch (error: any) {
+      console.error("Application creation error:", error);
+      
       if (error.name === "ZodError") {
         const validationError = fromZodError(error);
         return res.status(400).json({ message: validationError.message });
       }
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({ message: "Erreur lors de la création de la demande" });
     }
   });
 

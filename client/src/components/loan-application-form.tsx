@@ -128,8 +128,15 @@ export default function LoanApplicationForm() {
         totalCost: calculation.totalCost.toString(),
       };
       console.log("Submitting application data:", applicationData);
-      const response = await apiRequest("POST", "/api/loan-applications", applicationData);
-      return await response.json();
+      try {
+        const response = await apiRequest("POST", "/api/loan-applications", applicationData);
+        const result = await response.json();
+        console.log("Server response:", result);
+        return result;
+      } catch (error) {
+        console.error("Submission error:", error);
+        throw error;
+      }
     },
     onSuccess: (data: any) => {
       // Clear saved form data
