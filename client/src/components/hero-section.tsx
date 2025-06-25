@@ -1,12 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Calculator, CheckCircle, Shield, Clock } from "lucide-react";
 import LoanCalculator from "./loan-calculator";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function HeroSection() {
-  const scrollToApplication = () => {
-    const element = document.getElementById("application");
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+  const { isAuthenticated } = useAuth();
+
+  const handleGetStarted = () => {
+    if (isAuthenticated) {
+      const element = document.getElementById("application");
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      window.location.href = "/api/login";
     }
   };
 
@@ -38,11 +45,11 @@ export default function HeroSection() {
                 Simuler mon prêt
               </Button>
               <Button 
-                onClick={scrollToApplication}
+                onClick={handleGetStarted}
                 variant="outline"
                 className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-primary transition-colors duration-200"
               >
-                Demander maintenant
+                {isAuthenticated ? "Demander maintenant" : "Se connecter"}
               </Button>
             </div>
             <div className="flex items-center space-x-6 text-sm">

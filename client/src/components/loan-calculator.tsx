@@ -4,20 +4,28 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { calculateLoan } from "@/lib/loan-calculator";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LoanCalculator() {
   const [amount, setAmount] = useState(1500);
   const [duration, setDuration] = useState(6);
   const [calculation, setCalculation] = useState(calculateLoan(1500, 6));
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     setCalculation(calculateLoan(amount, duration));
   }, [amount, duration]);
 
-  const scrollToApplication = () => {
-    const element = document.getElementById("application");
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+  const handleContinue = () => {
+    if (isAuthenticated) {
+      const element = document.getElementById("application");
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // Sauvegarder les paramètres du prêt et rediriger vers la connexion
+      localStorage.setItem('loanParams', JSON.stringify({ amount, duration }));
+      window.location.href = "/api/login";
     }
   };
 
@@ -76,10 +84,10 @@ export default function LoanCalculator() {
           </div>
           
           <Button 
-            onClick={scrollToApplication}
+            onClick={handleContinue}
             className="w-full bg-primary text-white py-4 rounded-lg font-semibold hover:bg-primary-dark transition-colors duration-200"
           >
-            Faire ma demande
+            {isAuthenticated ? "Faire ma demande" : "Se connecter pour continuer"}
           </Button>
         </CardContent>
       </Card>
