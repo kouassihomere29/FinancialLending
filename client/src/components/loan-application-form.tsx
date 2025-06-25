@@ -84,40 +84,6 @@ export default function LoanApplicationForm() {
     }
   }, []);
 
-  // Si l'utilisateur n'est pas connecté, afficher un message d'invitation à se connecter
-  if (!isAuthenticated && !isLoading) {
-    return (
-      <section id="application" className="py-16 bg-white">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Demande de prêt personnel
-            </h2>
-            <p className="text-xl text-gray-600 mb-8">
-              Connectez-vous pour accéder au formulaire de demande
-            </p>
-            <Card className="w-full max-w-md mx-auto">
-              <CardHeader>
-                <CardTitle>Accès requis</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-gray-600 text-center">
-                  Pour votre sécurité et pour sauvegarder votre progression, vous devez vous connecter avant de commencer votre demande de prêt.
-                </p>
-                <Button 
-                  onClick={() => window.location.href = "/api/login"}
-                  className="w-full"
-                >
-                  Se connecter avec Replit
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   const form = useForm<FormData>({
     resolver: zodResolver(insertLoanApplicationSchema.extend({
       monthlyPayment: insertLoanApplicationSchema.shape.monthlyPayment.optional(),
@@ -266,6 +232,40 @@ export default function LoanApplicationForm() {
       ? "ml-2 text-sm font-medium text-primary"
       : "ml-2 text-sm font-medium text-gray-600";
   };
+
+  // Si l'utilisateur n'est pas connecté, afficher un message d'invitation à se connecter
+  if (!isAuthenticated && !isLoading) {
+    return (
+      <section id="application" className="py-16 bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              Demande de prêt personnel
+            </h2>
+            <p className="text-xl text-gray-600 mb-8">
+              Connectez-vous pour accéder au formulaire de demande
+            </p>
+            <Card className="w-full max-w-md mx-auto">
+              <CardHeader>
+                <CardTitle>Accès requis</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600 text-center">
+                  Pour votre sécurité et pour sauvegarder votre progression, vous devez vous connecter avant de commencer votre demande de prêt.
+                </p>
+                <Button 
+                  onClick={() => window.location.href = "/api/login"}
+                  className="w-full"
+                >
+                  Se connecter avec Replit
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="application" className="py-16 bg-white">
