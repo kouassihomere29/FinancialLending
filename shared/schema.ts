@@ -29,9 +29,27 @@ export const loanApplications = pgTable("loan_applications", {
   monthlyIncome: text("monthly_income").notNull(),
   monthlyExpenses: integer("monthly_expenses"),
   
+  // Process tracking - 7 steps
+  currentStep: integer("current_step").notNull().default(1), // 1-7
+  step1CompletedAt: timestamp("step1_completed_at"), // Simulation completed
+  step2CompletedAt: timestamp("step2_completed_at"), // Project submitted
+  step3CompletedAt: timestamp("step3_completed_at"), // Analysis completed
+  step4CompletedAt: timestamp("step4_completed_at"), // Submitted to lender
+  step5CompletedAt: timestamp("step5_completed_at"), // Lender response received
+  step6CompletedAt: timestamp("step6_completed_at"), // Account opened
+  step7CompletedAt: timestamp("step7_completed_at"), // Funds transferred
+  
+  // Lender information
+  lenderId: text("lender_id"), // ID of the assigned lender
+  lenderName: text("lender_name"), // Name of the lender
+  lenderResponse: text("lender_response"), // approved, rejected, pending
+  lenderMessage: text("lender_message"), // Message from lender
+  accountNumber: text("account_number"), // Account number at lender
+  
   // Application status
-  status: text("status").notNull().default("pending"), // pending, approved, rejected
+  status: text("status").notNull().default("step1"), // step1, step2, ..., step7, completed, rejected
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
   
   // Agreements
   termsAccepted: boolean("terms_accepted").notNull().default(false),
@@ -46,6 +64,14 @@ export const insertUserSchema = createInsertSchema(users).omit({
 export const insertLoanApplicationSchema = createInsertSchema(loanApplications).omit({
   id: true,
   createdAt: true,
+  updatedAt: true,
+  step1CompletedAt: true,
+  step2CompletedAt: true,
+  step3CompletedAt: true,
+  step4CompletedAt: true,
+  step5CompletedAt: true,
+  step6CompletedAt: true,
+  step7CompletedAt: true,
 }).extend({
   amount: z.number().min(500).max(3000),
   duration: z.number().min(3).max(12),

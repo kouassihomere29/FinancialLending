@@ -12,6 +12,12 @@ export interface IStorage {
   getLoanApplication(id: number): Promise<LoanApplication | undefined>;
   getAllLoanApplications(): Promise<LoanApplication[]>;
   updateLoanApplicationStatus(id: number, status: string): Promise<LoanApplication | undefined>;
+  
+  // 7-step process methods
+  advanceApplicationStep(id: number, step: number): Promise<LoanApplication | undefined>;
+  assignLenderToApplication(id: number, lenderId: string, lenderName: string): Promise<LoanApplication | undefined>;
+  updateLenderResponse(id: number, response: string, message?: string): Promise<LoanApplication | undefined>;
+  setAccountNumber(id: number, accountNumber: string): Promise<LoanApplication | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
