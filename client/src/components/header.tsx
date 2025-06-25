@@ -87,6 +87,12 @@ export default function Header() {
                       <User className="h-4 w-4 mr-2" />
                       Mon espace
                     </DropdownMenuItem>
+                    {user?.role === "admin" && (
+                      <DropdownMenuItem onClick={() => window.location.href = "/admin"}>
+                        <User className="h-4 w-4 mr-2" />
+                        Administration
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="h-4 w-4 mr-2" />

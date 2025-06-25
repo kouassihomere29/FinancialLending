@@ -99,6 +99,10 @@ This is a loan application web platform built with a modern full-stack architect
 
 ```
 Changelog:
+- June 25, 2025: Created admin account (email: admin, password: Sydney220304!) with full administrative rights
+- June 25, 2025: Implemented comprehensive admin dashboard for managing all loan applications
+- June 25, 2025: Added user role system (user/admin) to the database schema
+- June 25, 2025: Fixed authentication issues and simplified session management with memory store
 - January 6, 2025: Added mandatory authentication for loan applications - users must sign up/login before proceeding
 - January 6, 2025: Implemented mandatory user authentication for loan application process
 - January 6, 2025: Updated hero section title and description to emphasize project financing and simplified messaging

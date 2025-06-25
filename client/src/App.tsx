@@ -7,7 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import Dashboard from "@/pages/dashboard";
 import ApplicationStatus from "@/pages/application-status";
-import AdminPanel from "@/components/admin-panel";
+import AdminDashboard from "@/pages/admin-dashboard";
 import AuthPage from "@/pages/auth";
 import NotFound from "@/pages/not-found";
 
@@ -18,7 +18,7 @@ function Router() {
       <Route path="/auth" component={AuthPage} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/application/:id" component={ApplicationStatus} />
-      <Route path="/admin" component={AdminPanel} />
+      <Route path="/admin" component={AdminDashboard} />
       <Route component={NotFound} />
     </Switch>
   );

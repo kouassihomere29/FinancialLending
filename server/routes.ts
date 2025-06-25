@@ -66,6 +66,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin routes
+  app.get("/api/admin/loan-applications", isAuthenticated, async (req: any, res) => {
+    try {
+      if (req.user.role !== "admin") {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      const applications = await storage.getAllLoanApplications();
+      res.json(applications);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.patch("/api/admin/loan-applications/:id/status", isAuthenticated, async (req: any, res) => {
+    try {
+      if (req.user.role !== "admin") {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      const { id } = req.params;
+      const { status } = req.body;
+      const application = await storage.updateLoanApplicationStatus(parseInt(id), status);
+      res.json(application);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // Get all applications (admin only)
   app.get("/api/admin/loan-applications", async (req, res) => {
     try {
