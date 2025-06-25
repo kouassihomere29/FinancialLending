@@ -12,7 +12,7 @@ export default function FAQSection() {
     },
     {
       question: "Combien de temps pour recevoir les fonds ?",
-      answer: "Une fois votre dossier accepté et validé, les fonds sont virés sur votre compte dans un délai de 24h ouvrées maximum.",
+      answer: "Notre processus en 7 étapes prend jusqu'à 2 mois avec nos partenaires financiers. Les fonds sont virés après validation complète du dossier et ouverture du compte chez le prêteur.",
     },
     {
       question: "Puis-je rembourser par anticipation ?",
