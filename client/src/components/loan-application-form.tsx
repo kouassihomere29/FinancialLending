@@ -143,26 +143,52 @@ export default function LoanApplicationForm() {
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
             Votre demande de prêt
           </h2>
-          <p className="text-xl text-gray-600">Complétez votre demande en 3 minutes</p>
+          <p className="text-xl text-gray-600">Suivez notre processus en 7 étapes vers votre financement</p>
+          <div className="mt-4 text-sm text-gray-500">
+            Étapes 1-3: Votre demande • Étapes 4-7: Traitement et financement
+          </div>
         </div>
 
-        {/* Progress Steps */}
+        {/* Progress Steps - Now showing 7 steps */}
         <div className="mb-8">
-          <div className="flex items-center justify-center space-x-4">
+          <div className="flex items-center justify-center flex-wrap gap-2 max-w-4xl mx-auto">
             <div className="flex items-center">
               <div className={getStepClass(1)}>1</div>
-              <span className={getStepTextClass(1)}>Montant</span>
+              <span className={getStepTextClass(1)}>Simulation</span>
             </div>
-            <div className="w-16 h-0.5 bg-gray-300"></div>
+            <div className="w-8 h-0.5 bg-gray-300 hidden sm:block"></div>
             <div className="flex items-center">
               <div className={getStepClass(2)}>2</div>
-              <span className={getStepTextClass(2)}>Informations</span>
+              <span className={getStepTextClass(2)}>Dossier</span>
             </div>
-            <div className="w-16 h-0.5 bg-gray-300"></div>
+            <div className="w-8 h-0.5 bg-gray-300 hidden sm:block"></div>
             <div className="flex items-center">
               <div className={getStepClass(3)}>3</div>
               <span className={getStepTextClass(3)}>Validation</span>
             </div>
+            <div className="w-8 h-0.5 bg-gray-300 hidden sm:block"></div>
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-sm font-semibold">4</div>
+              <span className="ml-2 text-sm font-medium text-gray-500">Analyse</span>
+            </div>
+            <div className="w-8 h-0.5 bg-gray-300 hidden sm:block"></div>
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-sm font-semibold">5</div>
+              <span className="ml-2 text-sm font-medium text-gray-500">Prêteur</span>
+            </div>
+            <div className="w-8 h-0.5 bg-gray-300 hidden sm:block"></div>
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-sm font-semibold">6</div>
+              <span className="ml-2 text-sm font-medium text-gray-500">Compte</span>
+            </div>
+            <div className="w-8 h-0.5 bg-gray-300 hidden sm:block"></div>
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-sm font-semibold">7</div>
+              <span className="ml-2 text-sm font-medium text-gray-500">Fonds</span>
+            </div>
+          </div>
+          <div className="text-center mt-4 text-xs text-gray-400">
+            Délai total estimé: jusqu'à 2 mois avec nos partenaires financiers
           </div>
         </div>
 
@@ -173,7 +199,7 @@ export default function LoanApplicationForm() {
                 {/* Step 1: Loan Amount */}
                 {currentStep === 1 && (
                   <div className="space-y-6">
-                    <h3 className="text-2xl font-semibold mb-6">Définissez votre prêt</h3>
+                    <h3 className="text-2xl font-semibold mb-6">Étape 1: Simulation de votre prêt</h3>
                     
                     <div className="grid md:grid-cols-2 gap-6">
                       <FormField
@@ -289,7 +315,7 @@ export default function LoanApplicationForm() {
                 {/* Step 2: Personal Information */}
                 {currentStep === 2 && (
                   <div className="space-y-6">
-                    <h3 className="text-2xl font-semibold mb-6">Vos informations personnelles</h3>
+                    <h3 className="text-2xl font-semibold mb-6">Étape 2: Constitution du dossier</h3>
                     
                     <div className="grid md:grid-cols-2 gap-6">
                       <FormField
@@ -445,7 +471,7 @@ export default function LoanApplicationForm() {
                 {/* Step 3: Validation */}
                 {currentStep === 3 && (
                   <div className="space-y-6">
-                    <h3 className="text-2xl font-semibold mb-6">Validation de votre demande</h3>
+                    <h3 className="text-2xl font-semibold mb-6">Étape 3: Validation et soumission</h3>
                     
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
                       <h4 className="font-semibold text-blue-900 mb-4">Récapitulatif de votre demande</h4>
@@ -530,8 +556,8 @@ export default function LoanApplicationForm() {
                     <Alert className="bg-yellow-50 border-yellow-200">
                       <Info className="h-4 w-4 text-yellow-600" />
                       <AlertDescription className="text-sm text-yellow-800">
-                        <p className="font-medium mb-1">Information importante</p>
-                        <p>Un crédit vous engage et doit être remboursé. Vérifiez vos capacités de remboursement avant de vous engager.</p>
+                        <p className="font-medium mb-1">Processus en 7 étapes</p>
+                        <p>Après soumission, votre dossier sera analysé par nos partenaires financiers. Les étapes 4-7 comprennent l'analyse, la sélection du prêteur, l'ouverture de compte et le transfert des fonds (délai total: jusqu'à 2 mois).</p>
                       </AlertDescription>
                     </Alert>
 
@@ -546,7 +572,7 @@ export default function LoanApplicationForm() {
                         className="bg-success text-white hover:bg-green-600"
                       >
                         <Check className="mr-2 h-4 w-4" />
-                        {submitApplication.isPending ? "Finalisation..." : "Finaliser ma demande"}
+{submitApplication.isPending ? "Soumission..." : "Soumettre ma demande"}
                       </Button>
                     </div>
                   </div>
